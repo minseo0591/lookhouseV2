@@ -4,8 +4,8 @@ import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
 
-@Entity
-public class Like {
+@Entity(name = "likeboard")
+public class LikeBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "like_id")

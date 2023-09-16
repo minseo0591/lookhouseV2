@@ -29,6 +29,6 @@ public class Board {
     private List<Comment> comments = new ArrayList<Comment>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
-    private List<Like> likes = new ArrayList<Like>();
+    private List<LikeBoard> likes = new ArrayList<LikeBoard>();
 
 }
