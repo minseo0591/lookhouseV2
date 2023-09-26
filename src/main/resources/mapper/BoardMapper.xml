@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.look.house.repository.BoardRepository">
+
+    <insert id="boardSave">
+        INSERT into board(title,content,create_time,writer)
+        VALUES (#{title},#{content},#{createTime} ,#{writer})
+    </insert>
+
+    <select id="findOne" resultType="Board">
+        SELECT * from board where board_id = #{id}
+
+    </select>
+
+    <update id="boardUpdate">
+        UPDATE board set title=#{board.title},content=#{board.content} where board_id =#{id}
+    </update>
+
+    <delete id="boardDelete">
+        DELETE from board where board_id=#{id}
+    </delete>
+
+    <select id="findAll" resultType="Board">
+        SELECT * FROM board
+    </select>
+
+
+
+</mapper>

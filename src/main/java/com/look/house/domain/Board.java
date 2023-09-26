@@ -1,15 +1,14 @@
 package com.look.house.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Getter
 @ToString
 public class Board {
-    private Long boardId;
+    private Long id;
 
     private String title;
     private String content;
@@ -17,8 +16,8 @@ public class Board {
     private String writer;
 
     @Builder
-    public Board(Long boardId, String title, String content, LocalDateTime createTime, String writer) {
-        this.boardId = boardId;
+    public Board(Long id, String title, String content, LocalDateTime createTime, String writer) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.createTime = createTime;
@@ -30,4 +29,5 @@ public class Board {
         this.title= title;
         this.content =content;
     }
+
 }
