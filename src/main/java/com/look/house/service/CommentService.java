@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
 
+    @Transactional
     public void saveComment(Long boardId, PrincipalDetails principalDetails, CommentDTO.Write commentDTO){
         if(principalDetails == null){
             throw new CustomException(ErrorCode.NOT_MEMBER);
@@ -30,7 +33,6 @@ public class CommentService {
         Board board = boardRepository.findOne(boardId).orElseThrow(() ->
                 new CustomException(ErrorCode.ID_NOT_FOUND)
         );
-
         Comment comment = Comment.builder()
                 .boardId(board.getId())
                 .content(commentDTO.getContent())
@@ -38,6 +40,16 @@ public class CommentService {
                 .createTime(LocalDateTime.now())
                 .build();
         commentRepository.commentSave(comment);
+        boardRepository.boardCommentCount(board.getId());
+    }
+
+
+    public CommentDTO.ResponseList listComment(Long boardId){
+        List<Comment> comments = commentRepository.commentFindAll(boardId);
+        List<CommentDTO.Response> comment = CommentDTO.Response.ListCommentTOCommentDto(comments);
+        CommentDTO.ResponseList responseList = new CommentDTO.ResponseList(comment, comment.size());
+
+        return responseList;
     }
 
 

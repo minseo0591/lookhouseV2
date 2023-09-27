@@ -16,4 +16,8 @@
     <select id="commentFindAll" resultType="Comment">
         select * from comment where board_id =#{boardId}
     </select>
+
+    <update id="commentUpdate">
+        update comment set content=#{comment.content} where comment_id = #{commentId}
+    </update>
 </mapper>

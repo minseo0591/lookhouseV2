@@ -30,4 +30,11 @@ public class CommentApiController {
         return ResponseEntity.status(HttpStatus.OK).body("댓글 작성 확인");
     }
 
+    @GetMapping("/{id}/comment")
+    public ResponseEntity listComment(@PathVariable Long id){
+
+        CommentDTO.ResponseList responseList = commentService.listComment(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseList);
+    }
 }
