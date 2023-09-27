@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class BoardDTO {
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Request{
         @NotBlank(message = "{NotBlank.request.title}")
         private String title;
@@ -32,7 +33,7 @@ public class BoardDTO {
         private String content;
         private String writer;
         private String createTime;
-
+        private int commentCount;
 
         public Response(Board board) {
             this.id= board.getId();
@@ -40,6 +41,7 @@ public class BoardDTO {
             this.content = board.getContent();
             this.writer = board.getWriter();
             this.createTime=board.getCreateTime().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
+            this.commentCount= board.getCommentCount();
         }
 
         public static BoardDTO.Response BoardToBoardDto(Board board){

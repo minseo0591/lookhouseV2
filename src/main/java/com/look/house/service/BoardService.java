@@ -29,6 +29,7 @@ public class BoardService {
                 .content(boardDto.getContent())
                 .writer(member.getNickName())
                 .createTime(LocalDateTime.now())
+                .commentCount(0)
                 .build();
         boardRepository.boardSave(board);
     }

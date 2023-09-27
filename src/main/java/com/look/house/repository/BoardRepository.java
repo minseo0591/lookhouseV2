@@ -19,4 +19,6 @@ public interface BoardRepository {
     void boardDelete(Long id);
 
     List<Board> findAll();
+
+    void boardCommentCount(Long id);
 }
