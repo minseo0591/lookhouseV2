@@ -9,7 +9,8 @@ public enum ErrorCode {
     ID_NOT_FOUND("id","id.notfound","해당 id를 찾을 수없습니다.",HttpStatus.BAD_REQUEST),
     EDIT_ACCESS_DENIED("edit","edit.mismatch","수정 권한이 없습니다.",HttpStatus.BAD_REQUEST),
     DELETE_ACCESS_DENIED("delete","delete.mismatch","삭제 권한이 없습니다.",HttpStatus.BAD_REQUEST),
-    JOIN_CHECK_EMAIL("checkEmail","email.mismatch","인증번호가 아닙니다.",HttpStatus.BAD_REQUEST);
+    JOIN_CHECK_EMAIL("checkEmail","email.mismatch","인증번호가 아닙니다.",HttpStatus.BAD_REQUEST),
+    NOT_MEMBER("access","access.denied","로그인을 해주세요",HttpStatus.BAD_REQUEST);
     private String field;
     private String code;
     private String message;

@@ -24,7 +24,4 @@
     <select id="findAll" resultType="Board">
         SELECT * FROM board
     </select>
-
-
-
 </mapper>

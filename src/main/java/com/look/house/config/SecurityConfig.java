@@ -15,7 +15,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] whitelist  = {
             "/resources/**","/css/**","/js/**","/img/**",
-            "/login","/join","/findPassword","/api/**",
+            "/login","/join","/findPassword","/api/**"
     };
 
     @Override
