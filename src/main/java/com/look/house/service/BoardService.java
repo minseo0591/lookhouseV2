@@ -1,14 +1,15 @@
 package com.look.house.service;
 
 
-import com.look.house.auth.PrincipalDetails;
 import com.look.house.domain.Board;
 import com.look.house.domain.Member;
 import com.look.house.domain.dto.BoardDTO;
+import com.look.house.domain.dto.PageDTO;
 import com.look.house.repository.BoardRepository;
 import com.look.house.util.error.ErrorCode;
 import com.look.house.util.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardService {
     private final BoardRepository boardRepository;
 
@@ -79,4 +81,18 @@ public class BoardService {
 
         boardRepository.boardDelete(boardId);
     }
+
+    //페이지네이션 테스트 메서드
+    public List<BoardDTO.Response> pageList(int currentPageNo){
+        //필터 조건 받아오기
+        //다음 페이지
+        PageDTO pg = new PageDTO(5,10, boardRepository.countAll(), currentPageNo);
+
+        List<Board> boardList = boardRepository.findPageRecord(pg.getFirstRecordIndex(), pg.getRecordCountPerPage());
+        return BoardDTO.Response.ListBoardToBoardDto(boardList);
+    }
+
+
+
+
 }

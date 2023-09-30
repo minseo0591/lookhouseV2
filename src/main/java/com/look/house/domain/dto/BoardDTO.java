@@ -20,6 +20,10 @@ public class BoardDTO {
 
         @NotBlank(message = "{NotBlank.request.content}")
         private String content;
+
+        public Request(){
+            //기본생성자 없으면 실행안됨
+        }
     }
 
 
@@ -59,5 +63,8 @@ public class BoardDTO {
     public static class ResponseList{
         private List<BoardDTO.Response> boardList;
         private int totalCount;
+//        private  pageList;
     }
+
+
 }
