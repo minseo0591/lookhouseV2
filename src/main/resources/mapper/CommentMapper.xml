@@ -18,6 +18,10 @@
     </select>
 
     <update id="commentUpdate">
-        update comment set content=#{comment.content} where comment_id = #{commentId}
+        update comment set content=#{content} where comment_id = #{commentId}
     </update>
+
+    <delete id="commentDelete">
+        DELETE from comment where comment_id =#{commentId}
+    </delete>
 </mapper>

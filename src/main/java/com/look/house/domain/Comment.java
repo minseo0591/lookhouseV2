@@ -24,4 +24,8 @@ public class Comment {
         this.writer = writer;
         this.createTime = createTime;
     }
+
+    public void changeContent(String content){
+        this.content = content;
+    }
 }

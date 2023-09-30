@@ -21,4 +21,6 @@ public interface BoardRepository {
     List<Board> findAll();
 
     void boardCommentCount(Long id);
+
+    void updateCommentCount(@Param("id") Long id,@Param("type") String type);
 }

@@ -40,7 +40,7 @@ public class CommentService {
                 .createTime(LocalDateTime.now())
                 .build();
         commentRepository.commentSave(comment);
-        boardRepository.boardCommentCount(board.getId());
+        boardRepository.updateCommentCount(board.getId(),"add");
     }
 
 
@@ -52,7 +52,46 @@ public class CommentService {
         return responseList;
     }
 
+    /**
+    *    댓글 수정하기
+     *    예외) 로그인, 댓글 번호, 유저와 작성자 비교
+     *
+    */
+    public void updateComment(Long commentId,PrincipalDetails principalDetails, CommentDTO.Write commentDTO){
+        if(principalDetails == null){
+            throw new CustomException(ErrorCode.NOT_MEMBER);
+        }
+        Comment comment = commentRepository.commentFindOne(commentId).orElseThrow(() ->
+                new CustomException(ErrorCode.ID_NOT_FOUND)
+        );
+
+        if(!principalDetails.getMember().getNickName().equals(comment.getWriter())){
+            throw new CustomException(ErrorCode.EDIT_ACCESS_DENIED);
+        }
+        comment.changeContent(commentDTO.getContent());
+        commentRepository.commentUpdate(comment);
+
+    }
 
 
+    /**
+     * 댓글 삭제하기
+     *
+     */
+    @Transactional
+    public void deleteComment(Long commentId,PrincipalDetails principalDetails){
+        if(principalDetails == null){
+            throw new CustomException(ErrorCode.NOT_MEMBER);
+        }
+        Comment comment = commentRepository.commentFindOne(commentId).orElseThrow(() ->
+                new CustomException(ErrorCode.ID_NOT_FOUND)
+        );
+        if(!principalDetails.getMember().getNickName().equals(comment.getWriter())){
+            throw new CustomException(ErrorCode.DELETE_ACCESS_DENIED);
+        }
+        commentRepository.commentDelete(comment.getCommentId());
+        boardRepository.updateCommentCount(comment.getBoardId(),"delete");
+
+    }
 
 }

@@ -28,4 +28,15 @@
     <update id="boardCommentCount">
         update board set commentCount = commentCount + 1 where board_id = #{id}
     </update>
+
+    <update id="updateCommentCount">
+        <choose>
+            <when test="type == 'add'">
+                update board set commentCount = commentCount + 1 where board_id = #{id}
+            </when>
+            <when test="type == 'delete'">
+                update board set commentCount = commentCount - 1 where board_id = #{id}
+            </when>
+        </choose>
+    </update>
 </mapper>
