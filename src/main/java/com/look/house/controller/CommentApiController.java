@@ -30,4 +30,29 @@ public class CommentApiController {
         return ResponseEntity.status(HttpStatus.OK).body("댓글 작성 확인");
     }
 
+    @GetMapping("/{id}/comment")
+    public ResponseEntity listComment(@PathVariable Long id){
+
+        CommentDTO.ResponseList responseList = commentService.listComment(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseList);
+    }
+
+    @PatchMapping("/{id}/comment/{commentId}")
+    public ResponseEntity updateComment(@PathVariable Long id,
+                                        @PathVariable Long commentId,
+                                        @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                        @RequestBody @Valid CommentDTO.Write commentDTO){
+        commentService.updateComment(commentId,principalDetails,commentDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body("수정 완료");
+    }
+
+    @DeleteMapping("/{id}/comment/{commentId}")
+    public ResponseEntity deleteComment(@PathVariable Long id,
+                                        @PathVariable Long commentId,
+                                        @AuthenticationPrincipal PrincipalDetails principalDetails){
+        commentService.deleteComment(commentId,principalDetails);
+        return ResponseEntity.status(HttpStatus.OK).body("삭제 완료");
+    }
 }

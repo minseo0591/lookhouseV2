@@ -4,8 +4,8 @@
 <mapper namespace="com.look.house.repository.BoardRepository">
 
     <insert id="boardSave">
-        INSERT into board(title,content,create_time,writer)
-        VALUES (#{title},#{content},#{createTime} ,#{writer})
+        INSERT into board(title,content,create_time,writer,commentCount)
+        VALUES (#{title},#{content},#{createTime} ,#{writer},#{commentCount})
     </insert>
 
     <select id="findOne" resultType="Board">
@@ -24,11 +24,27 @@
     <select id="findAll" resultType="Board">
         SELECT * FROM board
     </select>
-<!--    페이징-->
+  <!--    페이징-->
     <select id="countAll" resultType="integer">
         select count(*) from board
     </select>
     <select id="findPageRecord" resultType="Board">
         select * from board Order by create_time desc LIMIT #{firstIndex} ,#{recordCountPerPage}
     </select>
+  
+    <update id="boardCommentCount">
+        update board set commentCount = commentCount + 1 where board_id = #{id}
+    </update>
+
+    <update id="updateCommentCount">
+        <choose>
+            <when test="type == 'add'">
+                update board set commentCount = commentCount + 1 where board_id = #{id}
+            </when>
+            <when test="type == 'delete'">
+                update board set commentCount = commentCount - 1 where board_id = #{id}
+            </when>
+        </choose>
+    </update>
+
 </mapper>

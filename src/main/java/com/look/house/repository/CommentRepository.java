@@ -17,4 +17,8 @@ public interface CommentRepository {
     Optional<Comment> commentFindOne(Long commentId);
 
     List<Comment> commentFindAll(Long boardId);
+
+    void commentUpdate(Comment comment);
+
+    void commentDelete(Long commentId);
 }

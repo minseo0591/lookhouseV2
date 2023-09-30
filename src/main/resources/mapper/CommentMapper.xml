@@ -16,4 +16,12 @@
     <select id="commentFindAll" resultType="Comment">
         select * from comment where board_id =#{boardId}
     </select>
+
+    <update id="commentUpdate">
+        update comment set content=#{content} where comment_id = #{commentId}
+    </update>
+
+    <delete id="commentDelete">
+        DELETE from comment where comment_id =#{commentId}
+    </delete>
 </mapper>

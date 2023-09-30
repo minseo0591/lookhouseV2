@@ -15,13 +15,16 @@ public class Board {
     private LocalDateTime createTime;
     private String writer;
 
+    private int commentCount;
+
     @Builder
-    public Board(Long id, String title, String content, LocalDateTime createTime, String writer) {
+    public Board(Long id, String title, String content, LocalDateTime createTime, String writer,int commentCount) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createTime = createTime;
         this.writer = writer;
+        this.commentCount = commentCount;
     }
 
 
