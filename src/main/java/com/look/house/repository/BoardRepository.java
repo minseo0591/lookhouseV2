@@ -19,4 +19,9 @@ public interface BoardRepository {
     void boardDelete(Long id);
 
     List<Board> findAll();
+    //페이징
+    int countAll();
+    List<Board> findPageRecord(@Param("firstIndex") int firstIndex, @Param("recordCountPerPage")int recordCountPerPage);
+
+
 }

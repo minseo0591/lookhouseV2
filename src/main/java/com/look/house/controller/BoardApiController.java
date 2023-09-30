@@ -4,6 +4,7 @@ import com.look.house.auth.PrincipalDetails;
 import com.look.house.domain.dto.BoardDTO;
 import com.look.house.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/board")
 @RequiredArgsConstructor
+@Slf4j
 public class BoardApiController {
 
     private final BoardService boardService;
@@ -22,12 +24,11 @@ public class BoardApiController {
     /**
      *  게시글 등록하기
      */
+
     @PostMapping
-    public ResponseEntity saveBoard(@RequestBody @Valid BoardDTO.Request boardDto,
-                                    @AuthenticationPrincipal PrincipalDetails principalDetails){
+    public ResponseEntity saveBoard(@RequestBody @Valid BoardDTO.Request boardDto,@AuthenticationPrincipal PrincipalDetails principalDetails){
         boardService.save(principalDetails.getMember(), boardDto);
-        return ResponseEntity.status(HttpStatus.OK).body("작성 완료");
-    }
+        return ResponseEntity.status(HttpStatus.OK).body("작성 완료");}
 
     /**
      * @게시글리스트 (리스트 갯수 OK,페이징,검색) 확장:카테고리
@@ -73,6 +74,17 @@ public class BoardApiController {
                                       @AuthenticationPrincipal PrincipalDetails principalDetails){
         boardService.delete(boardId,principalDetails.getMember());
         return ResponseEntity.status(HttpStatus.OK).body("삭제 OK");
+    }
+
+    //pagination
+    @GetMapping("/test/{currentPageNo}/{카테고리}/{세부검색조건}/{검색어}")
+    public ResponseEntity<BoardDTO.ResponseList> list1Board(@PathVariable("currentPageNo") int currentPageNo) {
+        //리미트 사용한 select 문과
+        //전체 게시글 조회 가져오기
+        List<BoardDTO.Response> list = boardService.pageList(currentPageNo);
+        BoardDTO.ResponseList responseList = new BoardDTO.ResponseList(list, list.size());
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
 
 }
