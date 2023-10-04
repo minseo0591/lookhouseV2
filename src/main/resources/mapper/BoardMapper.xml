@@ -24,12 +24,83 @@
     <select id="findAll" resultType="Board">
         SELECT * FROM board
     </select>
+
+    <!-- 게시글 검색 -->
+    <sql id="search">
+        <!-- 검색 키워드가 있을 때 -->
+        <if test="keyword != null and keyword != ''">
+            <choose>
+                <!-- 검색 유형이 있을 때 -->
+                <when test="searchType != null and searchType != ''">
+                    <choose>
+                        <when test="'title'.equals( searchType )">
+                            AND title LIKE "%${keyword}%"
+                        </when>
+                        <when test="'content'.equals( searchType )">
+                            AND content LIKE "%${keyword}%"
+                        </when>
+                        <when test="'writer'.equals( searchType )">
+                            AND writer LIKE "%${keyword}%"
+                        </when>
+                    </choose>
+                </when>
+
+                <!-- 전체 검색일 때 -->
+                <otherwise>
+                    AND (
+                    title LIKE "%${keyword}%"
+                    OR content LIKE "%${keyword}%"
+                    OR writer LIKE "%${keyword}%"
+                    )
+                </otherwise>
+            </choose>
+        </if>
+    </sql>
   <!--    페이징-->
     <select id="countAll" resultType="integer">
-        select count(*) from board
+        select count(*)
+        from board
+        <where>
+            <include refid="search"></include>
+        </where>
     </select>
-    <select id="findPageRecord" resultType="Board">
-        select * from board Order by create_time desc LIMIT #{firstIndex} ,#{recordCountPerPage}
+
+
+    <select id="findAll1" resultType="Board">
+        select *
+        from board
+        <where>
+                <!-- 검색 키워드가 있을 때 -->
+                <if test="searchDTO.keyword != null and searchDTO.keyword != ''">
+                    <choose>
+                        <!-- 검색 유형이 있을 때 -->
+                        <when test="searchDTO.searchType != null and searchDTO.searchType != ''">
+                            <choose>
+                                <when test="'title'.equals( searchDTO.searchType )">
+                                    AND title LIKE "%$searchDTO.{keyword}%"
+                                </when>
+                                <when test="'content'.equals( searchDTO.searchType )">
+                                    AND content LIKE "%${searchDTO.keyword}%"
+                                </when>
+                                <when test="'writer'.equals( searchDTO.searchType )">
+                                    AND writer LIKE "%${searchDTO.keyword}%"
+                                </when>
+                            </choose>
+                        </when>
+
+                        <!-- 전체 검색일 때 -->
+                        <otherwise>
+                            AND (
+                            title LIKE "%${searchDTO.keyword}%"
+                            OR content LIKE "%${searchDTO.keyword}%"
+                            OR writer LIKE "%${searchDTO.keyword}%"
+                            )
+                        </otherwise>
+                    </choose>
+                </if>
+        </where>
+        Order by board_id desc
+        LIMIT #{pagination.limitStart}, #{pagination.recordSize}
     </select>
   
     <update id="boardCommentCount">
