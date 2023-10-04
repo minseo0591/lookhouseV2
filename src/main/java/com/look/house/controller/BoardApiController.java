@@ -26,34 +26,33 @@ public class BoardApiController {
     /**
      *  게시글 등록하기
      */
-
     @PostMapping
     public ResponseEntity saveBoard(@RequestBody @Valid BoardDTO.Request boardDto,@AuthenticationPrincipal PrincipalDetails principalDetails){
+        log.info("principal ={}",principalDetails);
+        log.info("boardDto ={}",boardDto);
         boardService.save(principalDetails.getMember(), boardDto);
-        return ResponseEntity.status(HttpStatus.OK).body("작성 완료");}
+        return ResponseEntity.status(HttpStatus.OK).body("작성 완료");
+    }
 
     /**
      * @게시글리스트 (리스트 갯수 OK,페이징,검색) 확장:카테고리
      */
 
-//    @GetMapping
-//    public ResponseEntity<BoardDTO.ResponseList> listBoard() {
-//
-//        List<BoardDTO.Response> list = boardService.list();
-//
-//        BoardDTO.ResponseList responseList = new BoardDTO.ResponseList(list, list.size());
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(responseList);
-//    }
+//     @GetMapping
+//     public ResponseEntity<BoardDTO.ResponseList> listBoard() {
+//         BoardDTO.ResponseList list = boardService.list();
+//         return ResponseEntity.status(HttpStatus.OK).body(list);
+//     }
+
 
 
     /**
      * @게시글 상세보기 페이지
      */
     @GetMapping("/{id}")
-    public ResponseEntity<BoardDTO.Response> detailBoard(@PathVariable Long id){
-        BoardDTO.Response detail = boardService.detail(id);
-
+    public ResponseEntity<BoardDTO.Response> detailBoard(@PathVariable Long id,
+                                                         @AuthenticationPrincipal PrincipalDetails principalDetails){
+        BoardDTO.Response detail = boardService.detail(id,principalDetails);
         return ResponseEntity.status(HttpStatus.OK).body(detail);
     }
 

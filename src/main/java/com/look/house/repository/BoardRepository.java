@@ -30,4 +30,8 @@ public interface BoardRepository {
 
     void updateCommentCount(@Param("id") Long id,@Param("type") String type);
 
+    void updateHeartCount(@Param("id") Long id, @Param("type") String type);
+
+    List<Board> findMyBoard(String writer);
+
 }

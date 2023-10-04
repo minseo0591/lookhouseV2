@@ -24,4 +24,8 @@
     <delete id="commentDelete">
         DELETE from comment where comment_id =#{commentId}
     </delete>
+
+
+
+
 </mapper>
