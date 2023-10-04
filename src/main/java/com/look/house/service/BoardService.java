@@ -87,11 +87,14 @@ public class BoardService {
     //페이지네이션 테스트 메서드
     public BoardDTO.ResponsePage pageSearchList(RequestPageDTO requestPageDTO){
         int count = boardRepository.countAll(requestPageDTO.getSearchDTO());
+        log.info("count={}", count);
         // Pagination
         Pagination pagination = new Pagination(10,10);
         //페이지 계산
         pagination.changeSizes(count, requestPageDTO.getPagination().getPage());
         List<Board> boardList = boardRepository.findAll1(requestPageDTO.getSearchDTO(), pagination);
+        log.info("boardList={}", boardList);
+        requestPageDTO.setPagination(pagination);
         List<BoardDTO.Response> responses = BoardDTO.Response.ListBoardToBoardDto(boardList);
         return new BoardDTO.ResponsePage(responses,requestPageDTO);
 

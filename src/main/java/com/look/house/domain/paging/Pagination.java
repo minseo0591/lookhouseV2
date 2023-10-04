@@ -1,7 +1,6 @@
 package com.look.house.domain.paging;
 
 
-import com.look.house.domain.dto.SearchDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,12 +25,11 @@ public class Pagination {
         this.pageSize = pageSizes;
     }
 
-    public Pagination changeSizes(int totalRecordCount, int currentpage){
+    public void changeSizes(int totalRecordCount, int currentpage){
         if (totalRecordCount > 0) {
             this.totalRecordCount = totalRecordCount;
             calculation(currentpage);
         }
-        return new Pagination();
     }
 
     private void calculation(int currentpage) {
