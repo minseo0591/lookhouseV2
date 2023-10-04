@@ -2,6 +2,7 @@ package com.look.house.controller;
 
 import com.look.house.auth.PrincipalDetails;
 import com.look.house.domain.dto.BoardDTO;
+import com.look.house.domain.dto.RequestPageDTO;
 import com.look.house.domain.dto.SearchDTO;
 import com.look.house.domain.paging.Pagination;
 import com.look.house.service.BoardService;
@@ -13,7 +14,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/board")
@@ -81,11 +81,11 @@ public class BoardApiController {
     //pagination
     @GetMapping("/test/{courses}")
     public ResponseEntity<?> list1Board(@PathVariable(value = "courses") String ct,
-                                        @RequestBody SearchDTO searchDTO) {
+                                        @RequestBody RequestPageDTO requestPageDTO) {
         System.out.println("ct = " + ct);
         if(ct.equals("courses")){
             {
-                BoardDTO.ResponsePage list = boardService.pageList(searchDTO);
+                BoardDTO.ResponsePage list = boardService.pageSearchList(requestPageDTO);
                 return ResponseEntity.status(HttpStatus.OK).body(list);
             }
         }

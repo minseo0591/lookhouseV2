@@ -59,7 +59,7 @@ public class BoardDTO {
     @AllArgsConstructor
     public static class ResponsePage{
         private List<BoardDTO.Response> boardList;
-        private SearchDTO searchDTO;
+        private RequestPageDTO requestPageDTO;
     }
 
 

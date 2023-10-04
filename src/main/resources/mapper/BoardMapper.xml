@@ -63,17 +63,44 @@
         <where>
             <include refid="search"></include>
         </where>
-
-
-
     </select>
+
 
     <select id="findAll1" resultType="Board">
         select *
         from board
-        <where><include refid="search"></include></where>
-        Order by board_id
-        LIMIT #{pagination.limitStart}, #{recordSize}
+        <where>
+                <!-- 검색 키워드가 있을 때 -->
+                <if test="searchDTO.keyword != null and searchDTO.keyword != ''">
+                    <choose>
+                        <!-- 검색 유형이 있을 때 -->
+                        <when test="searchDTO.searchType != null and searchDTO.searchType != ''">
+                            <choose>
+                                <when test="'title'.equals( searchDTO.searchType )">
+                                    AND title LIKE "%$searchDTO.{keyword}%"
+                                </when>
+                                <when test="'content'.equals( searchDTO.searchType )">
+                                    AND content LIKE "%${searchDTO.keyword}%"
+                                </when>
+                                <when test="'writer'.equals( searchDTO.searchType )">
+                                    AND writer LIKE "%${searchDTO.keyword}%"
+                                </when>
+                            </choose>
+                        </when>
+
+                        <!-- 전체 검색일 때 -->
+                        <otherwise>
+                            AND (
+                            title LIKE "%${searchDTO.keyword}%"
+                            OR content LIKE "%${searchDTO.keyword}%"
+                            OR writer LIKE "%${searchDTO.keyword}%"
+                            )
+                        </otherwise>
+                    </choose>
+                </if>
+        </where>
+        Order by board_id desc
+        LIMIT #{pagination.limitStart}, #{pagination.recordSize}
     </select>
   
     <update id="boardCommentCount">
