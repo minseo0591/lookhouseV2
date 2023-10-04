@@ -11,4 +11,6 @@
     <select id="memberSave">
         insert into member(email,password,nickname,role,provider,create_time) VALUES (#{email},#{password},#{nickName},#{role},#{provider},#{createDate})
     </select>
+
+
 </mapper>

@@ -1,6 +1,7 @@
 package com.look.house.service;
 
 
+import com.look.house.auth.PrincipalDetails;
 import com.look.house.domain.Board;
 import com.look.house.domain.Member;
 import com.look.house.domain.dto.BoardDTO;
@@ -20,7 +21,7 @@ import java.util.List;
 @Slf4j
 public class BoardService {
     private final BoardRepository boardRepository;
-
+    private final HeartService heartService;
     /**
      *  게시글 저장
      */
@@ -32,6 +33,7 @@ public class BoardService {
                 .writer(member.getNickName())
                 .createTime(LocalDateTime.now())
                 .commentCount(0)
+                .heartCount(0)
                 .build();
         boardRepository.boardSave(board);
     }
@@ -39,18 +41,27 @@ public class BoardService {
     /**
     *  게시글 상세보기
     */
-    public BoardDTO.Response detail(Long id){
+    public BoardDTO.Response detail(Long id, PrincipalDetails principalDetails){
         Board board = boardRepository.findOne(id).orElseThrow(()->
                 new CustomException(ErrorCode.ID_NOT_FOUND)
         );
-        return BoardDTO.Response.BoardToBoardDto(board);
+        if (principalDetails == null) {
+            throw new CustomException(ErrorCode.NOT_MEMBER);
+        }
+        boolean heartStatus = heartService.isHeart(id, principalDetails.getMember().getNickName());
+        BoardDTO.Response response = BoardDTO.Response.BoardToBoardDto(board);
+        response.setHeartStatus(heartStatus);
+
+        return response;
     }
     /**
      *  게시글 리스트
      */
-    public List<BoardDTO.Response> list(){
+    public BoardDTO.ResponseList list(){
         List<Board> boardList = boardRepository.findAll();
-        return BoardDTO.Response.ListBoardToBoardDto(boardList);
+        List<BoardDTO.Response> responses = BoardDTO.Response.ListBoardToBoardDto(boardList);
+        return new BoardDTO.ResponseList(responses, responses.size());
+
     }
 
     /**
@@ -93,6 +104,18 @@ public class BoardService {
     }
 
 
+
+
+    public BoardDTO.ResponseList boardByMe(PrincipalDetails principalDetails){
+        if(principalDetails == null){
+            throw new CustomException(ErrorCode.NOT_MEMBER);
+        }
+
+        List<Board> boards = boardRepository.findMyBoard(principalDetails.getMember().getNickName());
+        List<BoardDTO.Response> response = BoardDTO.Response.ListBoardToBoardDto(boards);
+        return new BoardDTO.ResponseList(response,response.size());
+
+    }
 
 
 }

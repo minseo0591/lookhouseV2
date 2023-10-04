@@ -21,9 +21,6 @@ public class BoardDTO {
         @NotBlank(message = "{NotBlank.request.content}")
         private String content;
 
-        public Request(){
-            //기본생성자 없으면 실행안됨
-        }
     }
 
 
@@ -38,6 +35,8 @@ public class BoardDTO {
         private String writer;
         private String createTime;
         private int commentCount;
+        private int heartCount;
+        private boolean heartStatus=false;
 
         public Response(Board board) {
             this.id= board.getId();
@@ -46,7 +45,13 @@ public class BoardDTO {
             this.writer = board.getWriter();
             this.createTime=board.getCreateTime().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
             this.commentCount= board.getCommentCount();
+            this.heartCount = board.getHeartCount();
         }
+
+        public void setHeartStatus(boolean heartStatus) {
+            this.heartStatus = heartStatus;
+        }
+
 
         public static BoardDTO.Response BoardToBoardDto(Board board){
             return new Response(board);
