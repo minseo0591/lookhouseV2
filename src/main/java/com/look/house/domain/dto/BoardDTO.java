@@ -65,6 +65,12 @@ public class BoardDTO {
 
     @Data
     @AllArgsConstructor
+    public static class ResponseList{
+        private List<BoardDTO.Response> boardList;
+        private int totalCount;
+    }
+    @Data
+    @AllArgsConstructor
     public static class ResponsePage{
         private List<BoardDTO.Response> boardList;
         private RequestPageDTO requestPageDTO;
