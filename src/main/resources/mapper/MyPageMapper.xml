@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.look.house.repository.MyPageRepository">
+
+
+
+    <select id="findMyCommentAndBoard" resultType="com.look.house.domain.dto.MyPageDTO$MyPageResponse">
+    SELECT c.comment_id, c.content ,c.create_time ,b.board_id ,b.title ,b.commentCount
+    FROM comment c
+        JOIN board b ON c.board_id = b.board_id
+    WHERE c.writer = #{writer}
+    </select>
+
+    <select id="findMyHeartBoard" resultType="Board">
+    SELECT b.board_id, b.title,b.content, b.create_time, b.writer, b.commentCount,b.heartCount
+    FROM heart h
+        JOIN board b ON h.board_id= b.board_id
+    where user_id = #{userId}
+    </select>
+
+</mapper>

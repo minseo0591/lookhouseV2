@@ -16,6 +16,8 @@ public class Comment {
     private String writer;
     private LocalDateTime createTime;
 
+
+
     @Builder
     public Comment(Long commentId,Long boardId, String content, String writer, LocalDateTime createTime) {
         this.commentId = commentId;

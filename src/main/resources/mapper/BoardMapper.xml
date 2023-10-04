@@ -4,8 +4,8 @@
 <mapper namespace="com.look.house.repository.BoardRepository">
 
     <insert id="boardSave">
-        INSERT into board(title,content,create_time,writer,commentCount)
-        VALUES (#{title},#{content},#{createTime} ,#{writer},#{commentCount})
+        INSERT into board(title,content,create_time,writer,commentCount,heartCount)
+        VALUES (#{title},#{content},#{createTime} ,#{writer},#{commentCount},#{heartCount})
     </insert>
 
     <select id="findOne" resultType="Board">
@@ -47,4 +47,43 @@
         </choose>
     </update>
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <update id="updateHeartCount">
+        <choose>
+            <when test="type == 'heartAdd'">
+                UPDATE board set heartCount = heartCount +1 where board_id =#{id}
+            </when>
+            <when test="type == 'heartDelete'">
+                UPDATE board set heartCount = heartCount -1 where board_id =#{id}
+            </when>
+        </choose>
+    </update>
+    
+    
+    <select id="findMyBoard" resultType="board">
+        select * from board where writer = #{writer}
+    </select>
+    
+    
+    
+    
+    
+    
 </mapper>
