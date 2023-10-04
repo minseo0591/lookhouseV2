@@ -2,6 +2,7 @@ package com.look.house.repository;
 
 
 import com.look.house.domain.Board;
+import com.look.house.domain.dto.SearchDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,8 +21,8 @@ public interface BoardRepository {
 
     List<Board> findAll();
     //페이징
-    int countAll();
-    List<Board> findPageRecord(@Param("firstIndex") int firstIndex, @Param("recordCountPerPage")int recordCountPerPage);
+    int countAll(SearchDTO sdt);
+    List<Board> findAll1(SearchDTO searchDTO);
   
     void boardCommentCount(Long id);
 

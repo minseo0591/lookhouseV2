@@ -1,6 +1,7 @@
 package com.look.house.domain.dto;
 
 import com.look.house.domain.Board;
+import com.look.house.domain.paging.Pagination;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,10 +21,6 @@ public class BoardDTO {
 
         @NotBlank(message = "{NotBlank.request.content}")
         private String content;
-
-        public Request(){
-            //기본생성자 없으면 실행안됨
-        }
     }
 
 
@@ -60,11 +57,11 @@ public class BoardDTO {
 
     @Data
     @AllArgsConstructor
-    public static class ResponseList{
+    public static class ResponsePage{
         private List<BoardDTO.Response> boardList;
-        private int totalCount;
-//        private  pageList;
+        private SearchDTO searchDTO;
     }
+
 
 
 }

@@ -5,6 +5,8 @@ import com.look.house.domain.Board;
 import com.look.house.domain.Member;
 import com.look.house.domain.dto.BoardDTO;
 import com.look.house.domain.dto.PageDTO;
+import com.look.house.domain.dto.SearchDTO;
+import com.look.house.domain.paging.Pagination;
 import com.look.house.repository.BoardRepository;
 import com.look.house.util.error.ErrorCode;
 import com.look.house.util.exception.CustomException;
@@ -83,16 +85,20 @@ public class BoardService {
     }
 
     //페이지네이션 테스트 메서드
-    public List<BoardDTO.Response> pageList(int currentPageNo){
-        //필터 조건 받아오기
-        //다음 페이지
-        PageDTO pg = new PageDTO(5,10, boardRepository.countAll(), currentPageNo);
+    public BoardDTO.ResponsePage pageList(SearchDTO sdt){
+        System.out.println(sdt.getKeyword() + " " + sdt.getSearchType());
+        int count = boardRepository.countAll(sdt);
+        if(count < 1){
+            System.out.println("검색된 결과가 없습니다.");
+        }
+        // Pagination 객체를 생성해서 페이지 정보 계산 후 SearchDto 타입의 객체인 params에 계산된 페이지 정보 저장
+        Pagination pagination = new Pagination(count, sdt);
+        sdt.setPagination(pagination);
+        List<Board> boardList = boardRepository.findAll1(sdt);
 
-        List<Board> boardList = boardRepository.findPageRecord(pg.getFirstRecordIndex(), pg.getRecordCountPerPage());
-        return BoardDTO.Response.ListBoardToBoardDto(boardList);
+        List<BoardDTO.Response> responses = BoardDTO.Response.ListBoardToBoardDto(boardList);
+        return new BoardDTO.ResponsePage(responses,sdt);
+
     }
-
-
-
 
 }

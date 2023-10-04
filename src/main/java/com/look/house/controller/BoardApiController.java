@@ -2,6 +2,8 @@ package com.look.house.controller;
 
 import com.look.house.auth.PrincipalDetails;
 import com.look.house.domain.dto.BoardDTO;
+import com.look.house.domain.dto.SearchDTO;
+import com.look.house.domain.paging.Pagination;
 import com.look.house.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,15 +36,15 @@ public class BoardApiController {
      * @게시글리스트 (리스트 갯수 OK,페이징,검색) 확장:카테고리
      */
 
-    @GetMapping
-    public ResponseEntity<BoardDTO.ResponseList> listBoard() {
-
-        List<BoardDTO.Response> list = boardService.list();
-
-        BoardDTO.ResponseList responseList = new BoardDTO.ResponseList(list, list.size());
-
-        return ResponseEntity.status(HttpStatus.OK).body(responseList);
-    }
+//    @GetMapping
+//    public ResponseEntity<BoardDTO.ResponseList> listBoard() {
+//
+//        List<BoardDTO.Response> list = boardService.list();
+//
+//        BoardDTO.ResponseList responseList = new BoardDTO.ResponseList(list, list.size());
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(responseList);
+//    }
 
 
     /**
@@ -77,14 +79,17 @@ public class BoardApiController {
     }
 
     //pagination
-    @GetMapping("/test/{currentPageNo}/{카테고리}/{세부검색조건}/{검색어}")
-    public ResponseEntity<BoardDTO.ResponseList> list1Board(@PathVariable("currentPageNo") int currentPageNo) {
-        //리미트 사용한 select 문과
-        //전체 게시글 조회 가져오기
-        List<BoardDTO.Response> list = boardService.pageList(currentPageNo);
-        BoardDTO.ResponseList responseList = new BoardDTO.ResponseList(list, list.size());
-
-        return ResponseEntity.status(HttpStatus.OK).body(responseList);
+    @GetMapping("/test/{courses}")
+    public ResponseEntity<?> list1Board(@PathVariable(value = "courses") String ct,
+                                        @RequestBody SearchDTO searchDTO) {
+        System.out.println("ct = " + ct);
+        if(ct.equals("courses")){
+            {
+                BoardDTO.ResponsePage list = boardService.pageList(searchDTO);
+                return ResponseEntity.status(HttpStatus.OK).body(list);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("실패");
     }
 
 }
