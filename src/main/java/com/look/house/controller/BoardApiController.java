@@ -1,6 +1,7 @@
 package com.look.house.controller;
 
 import com.look.house.auth.PrincipalDetails;
+import com.look.house.domain.Criteria;
 import com.look.house.domain.dto.BoardDTO;
 import com.look.house.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -33,16 +34,6 @@ public class BoardApiController {
     }
 
     /**
-     * @게시글리스트 (리스트 갯수 OK,페이징,검색) 확장:카테고리
-     */
-    @GetMapping
-    public ResponseEntity<BoardDTO.ResponseList> listBoard() {
-        BoardDTO.ResponseList list = boardService.list();
-        return ResponseEntity.status(HttpStatus.OK).body(list);
-    }
-
-
-    /**
      * @게시글 상세보기 페이지
      */
     @GetMapping("/{id}")
@@ -73,15 +64,14 @@ public class BoardApiController {
         return ResponseEntity.status(HttpStatus.OK).body("삭제 OK");
     }
 
-    //pagination
-    @GetMapping("/test/{currentPageNo}/{카테고리}/{세부검색조건}/{검색어}")
-    public ResponseEntity<BoardDTO.ResponseList> list1Board(@PathVariable("currentPageNo") int currentPageNo) {
-        //리미트 사용한 select 문과
-        //전체 게시글 조회 가져오기
-        List<BoardDTO.Response> list = boardService.pageList(currentPageNo);
-        BoardDTO.ResponseList responseList = new BoardDTO.ResponseList(list, list.size());
+    /**
+     * 게시글 리스트
+     */
 
-        return ResponseEntity.status(HttpStatus.OK).body(responseList);
+    @GetMapping
+    public ResponseEntity pageList(@RequestBody Criteria criteria){
+        BoardDTO.PageResponseList pageResponseList = boardService.pageResponseList(criteria);
+        return ResponseEntity.status(HttpStatus.OK).body(pageResponseList);
     }
 
 }

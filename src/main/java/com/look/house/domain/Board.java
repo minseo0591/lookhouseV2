@@ -15,9 +15,9 @@ public class Board {
 
     private int commentCount;
     private int heartCount;
-
+    private int cateId;
     @Builder
-    public Board(Long id, String title, String content, LocalDateTime createTime, String writer,int commentCount,int heartCount) {
+    public Board(Long id, String title, String content, LocalDateTime createTime, String writer,int commentCount,int heartCount, int cateId) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -25,12 +25,14 @@ public class Board {
         this.writer = writer;
         this.commentCount = commentCount;
         this.heartCount = heartCount;
+        this.cateId = cateId;
     }
 
 
-    public void change(String title,String content){
+    public void change(String title,String content,int category){
         this.title= title;
         this.content =content;
+        this.cateId =category;
     }
 
 }

@@ -1,63 +1,62 @@
 package com.look.house.domain.dto;
 
+
+import com.look.house.domain.Criteria;
 import lombok.Data;
 
 @Data
 public class PageDTO {
-    //페이징 처리 될 데이터 변수
-    private int recordCountPerPage;		//한 페이지당 게시되는 게시물 수
-    private int totalRecordCount;		//전체 게시물 수
-    private int firstRecordIndex; 		//페이징 sql의 조건절에 사용되는 시작 rownum
-    //페이징 변수
-    private int pageSize;				//페이지 리스트에 게시되는 페이지 수
-    private int realEnd;				//페이징 마지막 숫자
-    private int currentPageNo;			//현재 페이지 번호
-    private int firstPageNoOnPage;	//페이지 리스트의 첫 페이지 번호
-    private int lastPageNoOnPage;	//페이지 리스트의 마지막 페이지 번호
-    private boolean xprev = false;		//이전버튼
-    private boolean xnext = false;		//다음버튼
 
-    public PageDTO(int pagesize, int recordCountperPage, int totalRecordcount, int currentpageNo) {
-        this.recordCountPerPage = recordCountperPage;
-        this.totalRecordCount = totalRecordcount;
-        this.currentPageNo = currentpageNo;
-        this.pageSize = pagesize;
-        //페이징 첫번째 번호
-        this.lastPageNoOnPage = (int)(Math.ceil(currentPageNo/10.0)) * 10;
-        this.firstPageNoOnPage = lastPageNoOnPage - 9;
-        //페이징 마지막 번호
-        this.realEnd = (int)(Math.ceil((totalRecordCount * 1.0) / recordCountPerPage));
-        if(realEnd < lastPageNoOnPage) {
-            this.lastPageNoOnPage = realEnd;
+    //페이지 시작 번호 1 ,11,21
+    private int startPage;
+
+    //페이지 끝 번호 10,20,30
+    private int endPage;
+
+    // 이전 , 다음 버튼 존재 유무
+    private boolean next, prev;
+
+    //  데이터전체 갯수
+    private int totalCount;
+
+
+    // 현재 페이지 번호(1) , 한 페이지에 갯수(10) , 검색, 검색 타입
+    private Criteria cri;
+
+    public PageDTO(Criteria cri,int total){
+        this.cri = cri;
+        this.totalCount = total;
+        //페이지 끝번호 1,2,3,4,5,6,7,8,9,10 는 pageEnd 가 10
+        this.endPage = (int)(Math.ceil(cri.getPageNum()/10.0))* 10;
+
+        //페이지 시작번호
+        this.startPage = this.endPage -9;
+
+        // ex)  total이 85.0/10 =9
+        int realEnd = (int)(Math.ceil(total*1.0/cri.getAmount()));
+
+
+        /**
+         *   페이지 끝번호 유효성 체크
+         *   만약  realEnd =9
+         *    pageEnd = 10
+         *    이러면 realEnd 가 진짜 값이니깐 9를 pageEnd에 값9를 담는다.
+         */
+        if(realEnd< endPage){
+            this.endPage =realEnd;
         }
-        //페이지에 표시되는 첫번째 인덱스 번호
-        this.firstRecordIndex = (currentPageNo - 1) * recordCountPerPage;
-        //이전, 다음 버튼
-        this.xprev = firstPageNoOnPage > 1;
-        if(firstPageNoOnPage == 1){
-            this.xprev = false;
-        }
-        this.xnext = lastPageNoOnPage < realEnd;
+
+        /**
+         *  pageStart 1>1 false 이전버튼 생성 x
+         */
+        this.prev = this.startPage >1;
+
+        /**
+         *  ex ) pageEnd 10 < 12 true 다음버튼 생성 O
+         */
+        this.next =this.endPage <realEnd;
+
     }
 
-    public static class responsePage {
-        //전체 데이터 수
-        private int totalRecordCount;
-        //전체 페이지 수
-        private int realEnd;
-        //isLastPage
-        private boolean xpr;
-        //isFirstPage
-        public responsePage() {
 
-        }
-
-    }
-
-//    public class requestPage extends PageDTO{
-//        public requestPage(int currentPage){
-//            this.setCurrentPageNo(currentPage);
-//        }
-//        //검색 키워드
-//    }
 }

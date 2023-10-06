@@ -4,8 +4,8 @@
 <mapper namespace="com.look.house.repository.BoardRepository">
 
     <insert id="boardSave">
-        INSERT into board(title,content,create_time,writer,commentCount,heartCount)
-        VALUES (#{title},#{content},#{createTime} ,#{writer},#{commentCount},#{heartCount})
+        INSERT into board(title,content,create_time,writer,commentCount,heartCount,cate_id)
+        VALUES (#{title},#{content},#{createTime} ,#{writer},#{commentCount},#{heartCount},#{cateId})
     </insert>
 
     <select id="findOne" resultType="Board">
@@ -14,27 +14,55 @@
     </select>
 
     <update id="boardUpdate">
-        UPDATE board set title=#{board.title},content=#{board.content} where board_id =#{id}
+        UPDATE board set title=#{board.title},content=#{board.content} ,cate_id = #{cateId} where board_id =#{id}
     </update>
 
     <delete id="boardDelete">
         DELETE from board where board_id=#{id}
     </delete>
 
-    <select id="findAll" resultType="Board">
-        SELECT * FROM board
+
+<!--검색 조건 -->
+    <sql id="criteria">
+        <if test="cateId!=0">
+            cate_id = ${cateId}
+        </if>
+        <trim prefix=" AND (" suffix=")" prefixOverrides="OR" >
+            <foreach item="type" collection ="typeArr">
+                <trim prefix="OR">
+                    <choose>
+                        <when test="type == 'T'.toString()">
+                            title like concat ('%',#{keyword},'%')
+                        </when>
+                        <when test="type == 'C'.toString()">
+                            content like concat ('%',#{keyword},'%')
+                        </when>
+                        <when test="type == 'W'.toString()">
+                            writer like concat ('%',#{keyword},'%')
+                        </when>
+                    </choose>
+                </trim>
+            </foreach>
+        </trim>
+    </sql>
+    <select id="findList" resultType="board">
+        select *
+        from board
+        <where>
+            <include refid="criteria"></include>
+        </where>
+        order by board_id desc
+        limit #{skip} , #{amount}
     </select>
-  <!--    페이징-->
-    <select id="countAll" resultType="integer">
+
+    <select id="findCount" resultType="int">
         select count(*) from board
+        <where>
+            <include refid="criteria"></include>
+        </where>
+
     </select>
-    <select id="findPageRecord" resultType="Board">
-        select * from board Order by create_time desc LIMIT #{firstIndex} ,#{recordCountPerPage}
-    </select>
-  
-    <update id="boardCommentCount">
-        update board set commentCount = commentCount + 1 where board_id = #{id}
-    </update>
+
 
     <update id="updateCommentCount">
         <choose>
@@ -47,24 +75,6 @@
         </choose>
     </update>
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     <update id="updateHeartCount">
         <choose>
             <when test="type == 'heartAdd'">
@@ -75,15 +85,8 @@
             </when>
         </choose>
     </update>
-    
-    
+
     <select id="findMyBoard" resultType="board">
         select * from board where writer = #{writer}
     </select>
-    
-    
-    
-    
-    
-    
 </mapper>

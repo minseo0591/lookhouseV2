@@ -1,5 +1,6 @@
 package com.look.house.service;
 
+import com.look.house.domain.Criteria;
 import com.look.house.domain.dto.BoardDTO;
 
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,14 @@ class BoardServiceTest {
 
     @Test
     void list() {
-        BoardDTO.ResponseList list = boardService.list();
 
-        logger.info("boardList={}",list);
+
+
+    }
+
+    @Test
+    void pageList(){
+        BoardDTO.PageResponseList pageResponseList = boardService.pageResponseList(new Criteria());
+        logger.info("pageResponseList ={}",pageResponseList);
     }
 }
