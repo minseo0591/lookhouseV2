@@ -4,8 +4,8 @@
 <mapper namespace="com.look.house.repository.BoardRepository">
 
     <insert id="boardSave">
-        INSERT into board(title,content,create_time,writer,commentCount,heartCount)
-        VALUES (#{title},#{content},#{createTime} ,#{writer},#{commentCount},#{heartCount})
+        INSERT into board(title,content,create_time,writer,commentCount,heartCount,cate_id)
+        VALUES (#{title},#{content},#{createTime} ,#{writer},#{commentCount},#{heartCount},#{cateId})
     </insert>
 
     <select id="findOne" resultType="Board">
@@ -14,98 +14,55 @@
     </select>
 
     <update id="boardUpdate">
-        UPDATE board set title=#{board.title},content=#{board.content} where board_id =#{id}
+        UPDATE board set title=#{board.title},content=#{board.content} ,cate_id = #{cateId} where board_id =#{id}
     </update>
 
     <delete id="boardDelete">
         DELETE from board where board_id=#{id}
     </delete>
 
-    <select id="findAll" resultType="Board">
-        SELECT * FROM board
-    </select>
 
-    <!-- 게시글 검색 -->
-    <sql id="search">
-        <!-- 검색 키워드가 있을 때 -->
-        <if test="keyword != null and keyword != ''">
-            <choose>
-                <!-- 검색 유형이 있을 때 -->
-                <when test="searchType != null and searchType != ''">
+<!--검색 조건 -->
+    <sql id="criteria">
+        <if test="cateId!=0">
+            cate_id = ${cateId}
+        </if>
+        <trim prefix=" AND (" suffix=")" prefixOverrides="OR" >
+            <foreach item="type" collection ="typeArr">
+                <trim prefix="OR">
                     <choose>
-                        <when test="'title'.equals( searchType )">
-                            AND title LIKE "%${keyword}%"
+                        <when test="type == 'T'.toString()">
+                            title like concat ('%',#{keyword},'%')
                         </when>
-                        <when test="'content'.equals( searchType )">
-                            AND content LIKE "%${keyword}%"
+                        <when test="type == 'C'.toString()">
+                            content like concat ('%',#{keyword},'%')
                         </when>
-                        <when test="'writer'.equals( searchType )">
-                            AND writer LIKE "%${keyword}%"
+                        <when test="type == 'W'.toString()">
+                            writer like concat ('%',#{keyword},'%')
                         </when>
                     </choose>
-                </when>
-
-                <!-- 전체 검색일 때 -->
-                <otherwise>
-                    AND (
-                    title LIKE "%${keyword}%"
-                    OR content LIKE "%${keyword}%"
-                    OR writer LIKE "%${keyword}%"
-                    )
-                </otherwise>
-            </choose>
-        </if>
+                </trim>
+            </foreach>
+        </trim>
     </sql>
-  <!--    페이징-->
-    <select id="countAll" resultType="integer">
-        select count(*)
-        from board
-        <where>
-            <include refid="search"></include>
-        </where>
-    </select>
-
-
-    <select id="findAll1" resultType="Board">
+    <select id="findList" resultType="board">
         select *
         from board
         <where>
-                <!-- 검색 키워드가 있을 때 -->
-                <if test="searchDTO.keyword != null and searchDTO.keyword != ''">
-                    <choose>
-                        <!-- 검색 유형이 있을 때 -->
-                        <when test="searchDTO.searchType != null and searchDTO.searchType != ''">
-                            <choose>
-                                <when test="'title'.equals( searchDTO.searchType )">
-                                    AND title LIKE "%$searchDTO.{keyword}%"
-                                </when>
-                                <when test="'content'.equals( searchDTO.searchType )">
-                                    AND content LIKE "%${searchDTO.keyword}%"
-                                </when>
-                                <when test="'writer'.equals( searchDTO.searchType )">
-                                    AND writer LIKE "%${searchDTO.keyword}%"
-                                </when>
-                            </choose>
-                        </when>
-
-                        <!-- 전체 검색일 때 -->
-                        <otherwise>
-                            AND (
-                            title LIKE "%${searchDTO.keyword}%"
-                            OR content LIKE "%${searchDTO.keyword}%"
-                            OR writer LIKE "%${searchDTO.keyword}%"
-                            )
-                        </otherwise>
-                    </choose>
-                </if>
+            <include refid="criteria"></include>
         </where>
-        Order by board_id desc
-        LIMIT #{pagination.limitStart}, #{pagination.recordSize}
+        order by board_id desc
+        limit #{skip} , #{amount}
     </select>
-  
-    <update id="boardCommentCount">
-        update board set commentCount = commentCount + 1 where board_id = #{id}
-    </update>
+
+    <select id="findCount" resultType="int">
+        select count(*) from board
+        <where>
+            <include refid="criteria"></include>
+        </where>
+
+    </select>
+
 
     <update id="updateCommentCount">
         <choose>
@@ -118,24 +75,6 @@
         </choose>
     </update>
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     <update id="updateHeartCount">
         <choose>
             <when test="type == 'heartAdd'">
@@ -146,15 +85,8 @@
             </when>
         </choose>
     </update>
-    
-    
+
     <select id="findMyBoard" resultType="board">
         select * from board where writer = #{writer}
     </select>
-    
-    
-    
-    
-    
-    
 </mapper>

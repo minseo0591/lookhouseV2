@@ -3,11 +3,10 @@ package com.look.house.service;
 
 import com.look.house.auth.PrincipalDetails;
 import com.look.house.domain.Board;
+import com.look.house.domain.Criteria;
 import com.look.house.domain.Member;
 import com.look.house.domain.dto.BoardDTO;
-import com.look.house.domain.dto.RequestPageDTO;
-import com.look.house.domain.dto.SearchDTO;
-import com.look.house.domain.paging.Pagination;
+import com.look.house.domain.dto.PageDTO;
 import com.look.house.repository.BoardRepository;
 import com.look.house.util.error.ErrorCode;
 import com.look.house.util.exception.CustomException;
@@ -24,10 +23,11 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final HeartService heartService;
+
     /**
-     *  게시글 저장
+     * 게시글 저장
      */
-    public void save(Member member, BoardDTO.Request boardDto){
+    public void save(Member member, BoardDTO.Request boardDto) {
 
         Board board = Board.builder()
                 .title(boardDto.getTitle())
@@ -36,15 +36,16 @@ public class BoardService {
                 .createTime(LocalDateTime.now())
                 .commentCount(0)
                 .heartCount(0)
+                .cateId(boardDto.getCateId())
                 .build();
         boardRepository.boardSave(board);
     }
 
     /**
-    *  게시글 상세보기
-    */
-    public BoardDTO.Response detail(Long id, PrincipalDetails principalDetails){
-        Board board = boardRepository.findOne(id).orElseThrow(()->
+     * 게시글 상세보기
+     */
+    public BoardDTO.Response detail(Long id, PrincipalDetails principalDetails) {
+        Board board = boardRepository.findOne(id).orElseThrow(() ->
                 new CustomException(ErrorCode.ID_NOT_FOUND)
         );
         if (principalDetails == null) {
@@ -56,35 +57,27 @@ public class BoardService {
 
         return response;
     }
-    /**
-     *  게시글 리스트
-     */
-    public BoardDTO.ResponseList list(){
-        List<Board> boardList = boardRepository.findAll();
-        List<BoardDTO.Response> responses = BoardDTO.Response.ListBoardToBoardDto(boardList);
-        return new BoardDTO.ResponseList(responses, responses.size());
-
-    }
 
     /**
-     *  게시글 수정 (게시글이 있는지 확인 후 현재 로그인 정보와 게시글 작성자 일치여부 확인)
+     * 게시글 수정 (게시글이 있는지 확인 후 현재 로그인 정보와 게시글 작성자 일치여부 확인)
      */
-    public void update(Long boardId,BoardDTO.Request boardDto,Member member){
+    public void update(Long boardId, BoardDTO.Request boardDto, Member member) {
 
-        Board board = boardRepository.findOne(boardId).orElseThrow(()->
+        Board board = boardRepository.findOne(boardId).orElseThrow(() ->
                 new CustomException(ErrorCode.ID_NOT_FOUND)
         );
         if (!board.getWriter().equals(member.getNickName())) {
             throw new CustomException(ErrorCode.EDIT_ACCESS_DENIED);
         }
 
-        board.change(boardDto.getTitle(),boardDto.getContent());
-        boardRepository.boardUpdate(boardId,board);
+        board.change(boardDto.getTitle(), boardDto.getContent(),boardDto.getCateId());
+        boardRepository.boardUpdate(boardId, board);
     }
+
     /**
-     *  게시글 삭제
+     * 게시글 삭제
      */
-    public void delete(Long boardId,Member member){
+    public void delete(Long boardId, Member member) {
         Board board = boardRepository.findOne(boardId).orElseThrow(() ->
                 new CustomException(ErrorCode.ID_NOT_FOUND)
         );
@@ -95,30 +88,31 @@ public class BoardService {
         boardRepository.boardDelete(boardId);
     }
 
-    //페이지네이션 테스트 메서드
-    public BoardDTO.ResponsePage pageSearchList(RequestPageDTO requestPageDTO){
-        int count = boardRepository.countAll(requestPageDTO.getSearchDTO());
-        log.info("count={}", count);
-        // Pagination
-        Pagination pagination = new Pagination(10,10);
-        //페이지 계산
-        pagination.changeSizes(count, requestPageDTO.getPagination().getPage());
-        List<Board> boardList = boardRepository.findAll1(requestPageDTO.getSearchDTO(), pagination);
-        log.info("boardList={}", boardList);
-        requestPageDTO.setPagination(pagination);
-        List<BoardDTO.Response> responses = BoardDTO.Response.ListBoardToBoardDto(boardList);
-        return new BoardDTO.ResponsePage(responses,requestPageDTO);
 
-    }
-
-    public BoardDTO.ResponseList boardByMe(PrincipalDetails principalDetails){
-        if(principalDetails == null){
+    /**
+     * 마이페이지 내가 작성한 게시글
+     */
+    public BoardDTO.ResponseList boardByMe(PrincipalDetails principalDetails) {
+        if (principalDetails == null) {
             throw new CustomException(ErrorCode.NOT_MEMBER);
         }
 
         List<Board> boards = boardRepository.findMyBoard(principalDetails.getMember().getNickName());
         List<BoardDTO.Response> response = BoardDTO.Response.ListBoardToBoardDto(boards);
-        return new BoardDTO.ResponseList(response,response.size());
+        return new BoardDTO.ResponseList(response, response.size());
 
     }
+
+    /*  페이징 처리 리스트
+    * */
+    public BoardDTO.PageResponseList pageResponseList(Criteria criteria){
+
+        List<Board> pageList = boardRepository.findList(criteria);
+        int total = boardRepository.findCount(criteria);
+        PageDTO pageDTO = new PageDTO(criteria,total);
+        List<BoardDTO.Response> responses = BoardDTO.Response.ListBoardToBoardDto(pageList);
+        return new BoardDTO.PageResponseList(responses,pageDTO);
+
+    }
+
 }

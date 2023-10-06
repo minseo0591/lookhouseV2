@@ -1,6 +1,7 @@
 package com.look.house.controller;
 
 import com.look.house.auth.PrincipalDetails;
+import com.look.house.domain.Criteria;
 import com.look.house.domain.dto.BoardDTO;
 import com.look.house.domain.dto.RequestPageDTO;
 import com.look.house.domain.dto.SearchDTO;
@@ -34,19 +35,6 @@ public class BoardApiController {
         return ResponseEntity.status(HttpStatus.OK).body("작성 완료");
     }
 
-    /**
-     * @게시글리스트 (리스트 갯수 OK,페이징,검색) 확장:카테고리
-     */
-
-//     @GetMapping
-//     public ResponseEntity<BoardDTO.ResponseList> listBoard() {
-//         BoardDTO.ResponseList list = boardService.list();
-//         return ResponseEntity.status(HttpStatus.OK).body(list);
-//     }
-
-
-
-    /**
      * @게시글 상세보기 페이지
      */
     @GetMapping("/{id}")
@@ -77,18 +65,14 @@ public class BoardApiController {
         return ResponseEntity.status(HttpStatus.OK).body("삭제 OK");
     }
 
-    //pagination
-    @GetMapping("/test/{courses}")
-    public ResponseEntity<?> list1Board(@PathVariable(value = "courses") String ct,
-                                        @RequestBody RequestPageDTO requestPageDTO) {
-        System.out.println("ct = " + ct);
-        if(ct.equals("courses")){
-            {
-                BoardDTO.ResponsePage list = boardService.pageSearchList(requestPageDTO);
-                return ResponseEntity.status(HttpStatus.OK).body(list);
-            }
-        }
-        return ResponseEntity.status(HttpStatus.OK).body("실패");
+   /**
+     * 게시글 리스트
+     */
+
+    @GetMapping
+    public ResponseEntity pageList(@RequestBody Criteria criteria){
+        BoardDTO.PageResponseList pageResponseList = boardService.pageResponseList(criteria);
+        return ResponseEntity.status(HttpStatus.OK).body(pageResponseList);
     }
 
 }

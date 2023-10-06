@@ -2,9 +2,7 @@ package com.look.house.repository;
 
 
 import com.look.house.domain.Board;
-import com.look.house.domain.dto.RequestPageDTO;
-import com.look.house.domain.dto.SearchDTO;
-import com.look.house.domain.paging.Pagination;
+import com.look.house.domain.Criteria;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,17 +19,20 @@ public interface BoardRepository {
 
     void boardDelete(Long id);
 
-    List<Board> findAll();
-    //페이징
-    int countAll(SearchDTO searchDTO);
-    List<Board> findAll1(@Param("searchDTO")SearchDTO searchDTO, @Param("pagination") Pagination pagination);
-  
-    void boardCommentCount(Long id);
-
     void updateCommentCount(@Param("id") Long id,@Param("type") String type);
 
     void updateHeartCount(@Param("id") Long id, @Param("type") String type);
 
     List<Board> findMyBoard(String writer);
+
+    /*현재 리스트 가져오는 페이징 적용*/
+    List<Board> findList(Criteria criteria);
+
+    int findCount(Criteria criteria);
+
+
+
+
+
 
 }

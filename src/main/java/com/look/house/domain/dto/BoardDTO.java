@@ -1,12 +1,15 @@
 package com.look.house.domain.dto;
 
 import com.look.house.domain.Board;
-import com.look.house.domain.paging.Pagination;
+
+import com.look.house.domain.Category;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +24,9 @@ public class BoardDTO {
 
         @NotBlank(message = "{NotBlank.request.content}")
         private String content;
+
+        @NotNull(message = "카테고리를 선택해주세요")
+        private int cateId;
     }
 
 
@@ -37,6 +43,7 @@ public class BoardDTO {
         private int commentCount;
         private int heartCount;
         private boolean heartStatus=false;
+        private int cateId;
 
         public Response(Board board) {
             this.id= board.getId();
@@ -46,7 +53,11 @@ public class BoardDTO {
             this.createTime=board.getCreateTime().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
             this.commentCount= board.getCommentCount();
             this.heartCount = board.getHeartCount();
+            this.cateId = board.getCateId();
         }
+
+
+
 
         public void setHeartStatus(boolean heartStatus) {
             this.heartStatus = heartStatus;
@@ -69,13 +80,11 @@ public class BoardDTO {
         private List<BoardDTO.Response> boardList;
         private int totalCount;
     }
+    
     @Data
     @AllArgsConstructor
-    public static class ResponsePage{
-        private List<BoardDTO.Response> boardList;
-        private RequestPageDTO requestPageDTO;
+    public static class PageResponseList{
+        private List<BoardDTO.Response> boardPageList;
+        private PageDTO PageDTO;
     }
-
-
-
 }
