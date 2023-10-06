@@ -1,7 +1,9 @@
 package com.look.house.domain.dto;
 
 import com.look.house.domain.Board;
+
 import com.look.house.domain.Category;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +24,7 @@ public class BoardDTO {
 
         @NotBlank(message = "{NotBlank.request.content}")
         private String content;
-        
+
         @NotNull(message = "카테고리를 선택해주세요")
         private int cateId;
     }
@@ -77,15 +79,12 @@ public class BoardDTO {
     public static class ResponseList{
         private List<BoardDTO.Response> boardList;
         private int totalCount;
-//        private  pageList;
     }
-
+    
     @Data
     @AllArgsConstructor
     public static class PageResponseList{
         private List<BoardDTO.Response> boardPageList;
         private PageDTO PageDTO;
-
     }
-
 }
