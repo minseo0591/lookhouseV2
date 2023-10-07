@@ -13,7 +13,7 @@
     </select>
 
     <select id="findMyHeartBoard" resultType="Board">
-    SELECT b.board_id, b.title,b.content, b.create_time, b.writer, b.commentCount,b.heartCount
+    SELECT b.board_id, b.title,b.content, b.create_time, b.writer, b.commentCount,b.heartCount, b.cate_id
     FROM heart h
         JOIN board b ON h.board_id= b.board_id
     where user_id = #{userId}
