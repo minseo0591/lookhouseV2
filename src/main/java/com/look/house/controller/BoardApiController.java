@@ -3,9 +3,6 @@ package com.look.house.controller;
 import com.look.house.auth.PrincipalDetails;
 import com.look.house.domain.Criteria;
 import com.look.house.domain.dto.BoardDTO;
-import com.look.house.domain.dto.RequestPageDTO;
-import com.look.house.domain.dto.SearchDTO;
-import com.look.house.domain.paging.Pagination;
 import com.look.house.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +32,7 @@ public class BoardApiController {
         return ResponseEntity.status(HttpStatus.OK).body("작성 완료");
     }
 
-     * @게시글 상세보기 페이지
+     /* @게시글 상세보기 페이지
      */
     @GetMapping("/{id}")
     public ResponseEntity<BoardDTO.Response> detailBoard(@PathVariable Long id,
